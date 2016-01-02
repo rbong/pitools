@@ -6,7 +6,7 @@ if [ "$PI_SSH_ID" != "" ]; then
     picmd="ssh -t $PI_SSH_ID"
 fi
 
-if [ "$PI_SUB_PATH" == "" ]; then PI_SUB_PATH="/tmp/pisubs"
+if [ "$PI_SUB_PATH" == "" ]; then PI_SUB_PATH="/tmp/pisubs"; fi
 
 $picmd pkill -9 omxplayer &
 
