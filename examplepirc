@@ -1,2 +1,10 @@
+# the id of the ssh server set in ~/.ssh/config
 export PI_SSH_ID=lpi
+# the path to store subs on the remote device- it is recommended you use an
+# external volume because of memory. you can set volumes to aut-mount with
+# fstab.
+export PI_SUB_PATH=/mnt/pisubs
+# the path to send streams through on the remote device.
+export PI_FIFO_PATH=/mnt/pififo
+# prefer mp4 videos- some versions of omxplayer complain with certain formats.
 export PI_PREFER_MP4=true

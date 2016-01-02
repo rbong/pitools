@@ -1,4 +1,6 @@
 #!/bin/bash
+source ~/.pirc
+
 picmd="bash"
 if [ "$PI_SSH_ID" != "" ]; then
     picmd="ssh -t $PI_SSH_ID"

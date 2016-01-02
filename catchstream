@@ -20,12 +20,9 @@ if [ "$PI_FIFO_PATH" == "" ]; then PI_FIFO_PATH="/tmp/pififo"; fi
 
 sudo echo "got root"
 if [ "$@" != "" ]; then $browser "$@" & &> /dev/null; fi
-$picmd pkill -9 youtube-dl
-$picmd pkill -9 rtmpdump
-$picmd pkill -9 omxplayer
-$picmd rm -rf $PI_FIFO_PATH
-$picmd mkfifo $PI_FIFO_PATH
-
+$picmd pkill -9 omxplayer &
+$picmd pkill -9 rtmpdump &
+$picmd mkfifo $PI_FIFO_PATH &
 
 cmd=$(sudo rtmpsnoop --out-rtmpdump --one --quiet | sed 's/-o .*//')
 cmd="$cmd -o $PI_FIFO_PATH"
@@ -33,3 +30,4 @@ $picmd $cmd --quiet &
 if [ "$@" != "" ]; then pkill -9 $browser; fi
 sleep $wait
 $picmd omxplayer "$PI_FIFO_PATH"
+$picmd pkill -9 rtmpdump &

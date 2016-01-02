@@ -8,6 +8,8 @@ fi
 
 if [ "$PI_SUB_PATH" == "" ]; then PI_SUB_PATH="/tmp/pisubs"
 
+$picmd pkill -9 omxplayer &
+
 $picmd mkdir -p $PI_SUB_PATH &
 function dl {
     echo "finding subs..."
