@@ -1,0 +1,7 @@
+#!/bin/bash
+picmd="bash"
+if [ "$PI_SSH_ID" != "" ]; then
+    picmd="ssh -t $PI_SSH_ID"
+fi
+$picmd pkill -9 omxplayer
+$picmd pkill -9 rtmpdump

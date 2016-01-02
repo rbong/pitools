@@ -1,0 +1,77 @@
+#!/bin/bash
+source ~/.pirc
+
+picmd="bash"
+if [ "$PI_SSH_ID" != "" ]; then
+    picmd="ssh -t $PI_SSH_ID"
+fi
+
+if [ "$PI_SUB_PATH" == "" ]; then PI_SUB_PATH="/tmp/pisubs"
+
+$picmd mkdir -p $PI_SUB_PATH &
+function dl {
+    echo "finding subs..."
+    subs=$(jshon -e subtitles -e en <<< $j)
+    sub=""
+    subopt=""
+    if [ "$subs" == "" ]; then
+        subs=$(jshon -e automatic_captions -e en <<< $j)
+    fi
+    if [ "$subs" == "" ]; then
+        echo "no subs."
+    else
+        i=0
+        while true; do
+            if [ "$(jshon -e $i <<<  $subs)" == "" ]; then break; fi
+            if [ "$(jshon -e $i -e ext <<<  $subs)" == "\"srt\"" ]; then
+                sub="$(jshon -e $i -e url <<< $subs | sed 's/^"\|"$//g' | sed 's/\\\//\//g')"
+                break
+            fi
+            i=$((i+1))
+        done
+        if [ "$sub" == "" ]; then echo "no sub"
+        else
+            echo "downloading subs."
+            $picmd curl \"$sub\" \> $PI_SUB_PATH/$id.srt
+            subopt="--subtitles /tmp/subs/$id.srt"
+        fi
+    fi
+
+    echo "finding format..."
+    id=$(jshon -e id <<< $j | tr -d \")
+    fmts=$(jshon -e formats <<< $j)
+    url=""
+    ourl=""
+    i=0
+    while true; do
+        if [ "$(jshon -e $i <<<  $fmts)" == "" ]; then break; fi
+        url=$(jshon -e $i -e url <<< $fmts)
+        if [ $(jshon -e $i -e ext <<< $fmts) == "mp4" ]; then
+            ourl=$url
+        fi
+        i=$((i+1))
+    done
+    if [ "$PI_PREFER_MP4" = true -a "$ourl" != "" ]; then url=$ourl; fi
+    url="$(echo "$url" | sed 's/^"\|"$//g' | sed 's/\\\//\//g')"
+    echo "found format."
+
+    $picmd omxplayer -b \"$url\" $subopt
+}
+
+echo "determining if video is a playlist..."
+j=$(youtube-dl --flat-playlist --youtube-skip-dash-manifest --write-sub --write-auto-sub -J $@)
+
+p="$(jshon -e entries <<< $j)"
+if [ "$p" == "" ]; then
+    echo "video is not a playlist."
+    dl
+else
+    echo  "video is a playlist."
+    i=0
+    while [ "$(jshon -e $i <<< $p)" != "" ]; do
+        echo "streaming video index $i"
+        j=$(youtube-dl --youtube-skip-dash-manifest --write-sub --write-auto-sub --playlist-items $i -J $@ | jshon -e entries -e 0)
+        dl
+        i=$((i+1))
+    done
+fi

@@ -1,0 +1,35 @@
+#!/bin/bash
+source ~/.pirc
+
+picmd="bash"
+if [ "$PI_SSH_ID" != "" ]; then
+    picmd="ssh -t $PI_SSH_ID"
+fi
+
+browser="chromium"
+if [ "$PI_BROWSER" != "" ]; then
+    browser="$PI_BROWSER"
+fi
+
+wait=5
+if [ "$PI_WAIT_STREAM" != "" ]; then
+    wait=$PI_WAIT_STREAM
+fi
+
+if [ "$PI_FIFO_PATH" == "" ]; then PI_FIFO_PATH="/tmp/pififo"; fi
+
+sudo echo "got root"
+if [ "$@" != "" ]; then $browser "$@" & &> /dev/null; fi
+$picmd pkill -9 youtube-dl
+$picmd pkill -9 rtmpdump
+$picmd pkill -9 omxplayer
+$picmd rm -rf $PI_FIFO_PATH
+$picmd mkfifo $PI_FIFO_PATH
+
+
+cmd=$(sudo rtmpsnoop --out-rtmpdump --one --quiet | sed 's/-o .*//')
+cmd="$cmd -o $PI_FIFO_PATH"
+$picmd $cmd --quiet &
+if [ "$@" != "" ]; then pkill -9 $browser; fi
+sleep $wait
+$picmd omxplayer "$PI_FIFO_PATH"
