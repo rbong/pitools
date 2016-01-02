@@ -35,7 +35,7 @@ function dl {
         else
             echo "downloading subs."
             $picmd curl \"$sub\" \> $PI_SUB_PATH/$id.srt
-            subopt="--subtitles /tmp/subs/$id.srt"
+            subopt="--subtitles $PI_SUB_PATH/$id.srt"
         fi
     fi
 
