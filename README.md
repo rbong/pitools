@@ -20,7 +20,7 @@ PI\_SSH\_ID environment variable to the id used in ~/.ssh/config. Please see
 below.
 
 # ssh
-catchstream and catchvid merely capture the url of rtmp streams and embedded
+catchstream and catchvid merely capture the url of streams and embedded
 videos. It is possible to do most of the extra computation on your main
 computer. To send them remotely to your raspberry pi, you must configure an ssh
 server. It is required that you use an rsa key so that you can execute commands
@@ -34,20 +34,11 @@ pitools is configured with environmental variables contained in ~/.pirc. An
 example configuration is provided by examplepirc.
 
 #catchstream
-catchstream captures a live stream from the internet and plays it through
-omxplayer on the pi with a fifo streamed by rtmpdump.
+catchstream captures a live stream and plays it with omxplayer over ssh.
 
-rtmp streams are used for sites such as twitch.tv, castamp, and many more.
+catchstream takes one argument, which is a stream URL.
 
-catchstream takes one argument, which is a web page. The web page is launched
-in a browser and catchstream listens for an rtmp stream. If no argument is
-provided, catchstream listens for an rtmpstream without launching anything and
-you can use your ordinary browser.
-
-It is recommended that you output rtmpdump to an external volume on the pi
-unless if you have a very large sd card. Please see examplepirc. Be sure to
-kill rtmpdump if the script does not do it for you. A "killstream" command is
-provided, which also kills omxplayer.
+A "killstream" command is provided, which also kills omxplayer.
 
 #catchvid
 catchvid captures videos from any of the many sites supported by youtube-dl and
