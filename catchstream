@@ -1,7 +1,7 @@
 #!/bin/bash
 source ~/.pirc
 
-picmd="bash"
+picmd="bash -c"
 if [ "$PI_SSH_ID" != "" ]; then
     picmd="ssh -t $PI_SSH_ID"
 fi
@@ -18,4 +18,4 @@ fi
 
 if [ "$PI_FIFO_PATH" == "" ]; then PI_FIFO_PATH="/tmp/pififo"; fi
 
-$picmd livestreamer "$@" best -np omxplayer
+$picmd "livestreamer \"$@\" best -np omxplayer"
