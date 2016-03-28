@@ -23,8 +23,8 @@ function dl {
         echo "no subs."
     else
         j=0
-        while true; do
-            if [ "$(jshon -e $j <<<  $subs)" == "" ]; then break; fi
+        len=$(jshon -l <<< $subs)
+        while [ "$len" != "" -a $j -lt $len ]; do
             if [ "$(jshon -e $j -e ext <<<  $subs)" == "\"srt\"" ]; then
                 sub="$(jshon -e $j -e url <<< $subs | sed 's/^"\|"$//g' | sed 's/\\\//\//g')"
                 break
@@ -45,15 +45,16 @@ function dl {
     url=""
     ourl=""
     k=0
-    while true; do
-        if [ "$(jshon -e $k <<<  $fmts)" == "" ]; then break; fi
+    len=$(jshon -l <<< $fmts)
+    while [ "$len" != "" -a $k -lt $len ]; do
         url=$(jshon -e $k -e url <<< $fmts)
-        if [ $(jshon -e $k -e ext <<< $fmts) == "mp4" ]; then
+        if [ "$(jshon -e $k -e ext <<< $fmts)" == '"mp4"' ]; then
             ourl=$url
         fi
         k=$((k+1))
     done
     if [ "$PI_PREFER_MP4" = true -a "$ourl" != "" ]; then url=$ourl; fi
+    url="$(echo "$url" | sed -E 's/^"|"$//g' | sed -E 's/\\\//\//g')"
     url="$(echo "$url" | sed 's/^"\|"$//g' | sed 's/\\\//\//g')"
     echo "found format."
 
