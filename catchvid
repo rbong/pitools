@@ -55,7 +55,7 @@ function dl {
     done
     if [ "$PI_PREFER_MP4" = true -a "$ourl" != "" ]; then url=$ourl; fi
     url="$(echo "$url" | sed -E 's/^"|"$//g' | sed -E 's/\\\//\//g')"
-    url="$(echo "$url" | sed 's/^"\|"$//g' | sed 's/\\\//\//g')"
+    url="$(echo "$url" | sed 's/^"\|"$//g'
     echo "found format."
 
     $picmd omxplayer -b \"$url\" $subopt
