@@ -14,6 +14,8 @@ and jshon.
 On the computer recieving the commands, pitools requires curl, rtmpdump, and
 omxplayer (configuration for a different video player is possible).
 
+If you wish to use getsubs, mkvinfo and ffmpeg are required.
+
 If you wish for maximum speed, you must configure an ssh server on your remote
 computer and set up an rsa key on your main computer. You must also set the 
 PI\_SSH\_ID environment variable to the id used in ~/.ssh/config. Please see
@@ -50,3 +52,9 @@ caption language will soon be configurable.
 
 For speed reasons, it parses json from youtube-dl manually. If this fails to
 work on any website, please inform the author by posting the bug on github.
+
+#getsubs
+getsubs rips the subs from .mkv files and converts them to .srt files because
+of difficulty I've had with embedded subs.
+
+For now, getsubs returns the first subtitle track.
