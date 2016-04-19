@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 fname=$1
+if [ "${fname##*.}" != "mkv" ]; then
+    echo "Not an mkv file."
+    exit
+fi
 assname=${1%%.*}.ass
 srtname=${1%%.*}.srt
 tracknum=$(mkvinfo "$fname" | grep "Track type: subtitles" -B 2 | head -n 1 | sed 's/.* \([0-9]\+\))$/\1/')
